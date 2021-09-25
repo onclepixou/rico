@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require_relative '../lib/rico'
+
+options = {}
+
+optparse = OptionParser.new do |opts|
+	opts.banner = "Usage: #{File.basename($0)} [options]"
+
+	options[:parse_files] = []
+	opts.on('-p', '--parse FILENAME', 'Parse FILENAME and print its AST') do |uname|
+		options[:parse_files] << uname.downcase
+	end
+
+	opts.on('-h', '--help', 'Display this help') do
+		puts opts
+		exit
+	end
+end
+
+begin
+	optparse.parse!
+rescue Exception => e
+	if e.class == SystemExit then
+		exit 0
+	else
+		abort e.message + "\n\n" + optparse.to_s
+	end
+end
+
+
+options[:parse_files].each do |fname|
+	ast = Rico::Ricola.parse_file(fname)
+	puts ast
+end
+
