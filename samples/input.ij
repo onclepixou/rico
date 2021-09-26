@@ -4,11 +4,11 @@ BEGIN INPUT
 END INPUT ;
 
 BEGIN OUTPUT  
-    INTERVAL X(FLOAT);
-    SCALAR Y(INTEGER);
+    INTERVAL W(FLOAT);
+    SCALAR Z(INTEGER);
 END OUTPUT ;
 
 BEGIN CONSTRAINT
-    E1 : y = a*x + b/2;
-    E2 : X = ABS(X,3*Y,sqrt(Z)) + 1/Y;
+    E1 : W = 2*X + 7;
+    E2 : Z = cos(W) + 1/Y + max(1,2);
 END CONSTRAINT;

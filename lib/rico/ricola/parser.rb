@@ -2,6 +2,7 @@ require 'rltk/parser'
 require_relative './ast.rb'
 
 module Rico
+	
 	module Ricola
 
 		class Parser < RLTK::Parser

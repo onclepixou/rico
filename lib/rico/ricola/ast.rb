@@ -4,6 +4,7 @@ module Rico
 	module Ricola
 
 		class Node
+			
 			attr_reader :children # @return [Array{Node}]
 			attr_reader :parent   # @return [Node, nil]
 

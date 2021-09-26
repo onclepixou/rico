@@ -1,6 +1,7 @@
 require_relative './lexer.rb'
 require_relative './parser.rb'
 require_relative './ast.rb'
+require_relative './semantic.rb'
 
 module Rico
 	module Ricola
@@ -17,11 +18,13 @@ module Rico
 =end
 			ast = nil
 			begin
+
 				ast = Rico::Ricola::Parser::parse(tokens)
+				SemanticAnalyzer.new(ast)
+				ast
 			rescue Exception => e
 				puts e.message
 			end
-			ast
 		end
 	end
 end

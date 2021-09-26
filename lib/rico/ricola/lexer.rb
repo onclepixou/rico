@@ -1,9 +1,11 @@
 require 'rltk/lexer'
 
 module Rico
+
 	module Ricola
 
 		class Lexer < RLTK::Lexer
+
 			# Skip whitespace
 			rule(/\s/)
 
@@ -55,6 +57,5 @@ module Rico
 			rule(/\n/, :comment)	{ pop_state }
 			rule(/./, :comment)
 		end
-
 	end
 end
