@@ -2,6 +2,7 @@ require_relative './lexer.rb'
 require_relative './parser.rb'
 require_relative './ast.rb'
 require_relative './semantic.rb'
+require_relative './forward_backward.rb'
 
 module Rico
 	module Ricola
@@ -20,7 +21,8 @@ module Rico
 			begin
 
 				ast = Rico::Ricola::Parser::parse(tokens)
-				SemanticAnalyzer.new(ast)
+				semantic = SemanticAnalyzer.new(ast)
+				ForwardBackward.new(semantic.constraints)
 				ast
 			rescue Exception => e
 				puts e.message

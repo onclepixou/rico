@@ -7,9 +7,15 @@ module Rico
 			
 			attr_reader :children # @return [Array{Node}]
 			attr_reader :parent   # @return [Node, nil]
+			attr_reader :intermediate_variable
+			attr_writer :intermediate_variable
+			attr_reader :depth
+			attr_writer :depth
 
 			def initialize(*children)
 				@parent = nil
+				@intermediate_variable = nil
+				@depth = nil
 				@children = children.collect do |c|
 					check_if_node(c)
 					c.parent = self

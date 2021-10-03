@@ -7,6 +7,8 @@ module Rico
 
         class SemanticAnalyzer
 
+            attr_reader :constraints
+
             def initialize(ast)
                 @ast = ast
                 @variables = Hash.new
@@ -143,7 +145,7 @@ module Rico
                             end
                         end
                     end
-				end
+                end
             end
         end
     end
