@@ -10,20 +10,25 @@ module Rico
 		# Parse a file and return the constructed AST
 		# @param fname [String] the name of the file to parse
 		# @return [Ricola::Program] The root node of the AST which is a program
+
 		def self.parse_file(fname)
+
 			tokens = Rico::Ricola::Lexer.lex_file(fname)
-=begin
-			tokens.each do |t|
-				puts "#{t.type}#{t.value ? " #{t.value}":''}"
-			end
-=end
 			ast = nil
+
 			begin
 
+				# lexing/parsing/semantic
 				ast = Rico::Ricola::Parser::parse(tokens)
-				semantic = SemanticAnalyzer.new(ast)
-				ForwardBackward.new(semantic.constraints)
+				program_is_valid = Rico::Ricola::SemanticAnalyzer.new(ast).is_valid()
+
+				# forward backward
+				Rico::Interval::ForwardBackward.new(ast)
+
+				#semantic = SemanticAnalyzer.new(ast)
+				#ForwardBackward.new(semantic.constraints)
 				ast
+
 			rescue Exception => e
 				puts e.message
 			end

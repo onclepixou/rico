@@ -3,70 +3,126 @@ require_relative './ast.rb'
 
 module Rico
 
-	module Ricola
+	module Interval
+
+		class ConstraintNode
+
+			attr_reader :node  # return Ast Node
+			attr_reader :var   # return var name (string)
+			attr_reader :depth # return depth (integer) 
+
+			def initialize(node, var, depth )
+
+				@node = node
+				@var = var
+				@depth = depth
+			end
+
+			def to_s()
+
+				return "Constraint : depth : " + @depth.to_s + " variable : " + @var.to_s + " node : \n" + @node.to_s
+			end
+		end
 
 		class ForwardBackward
 			
+			attr_reader :ast                   # return Root Node
+			attr_reader :constraint_nodes      # return Array(ConstraintNode)
 
-			def initialize(constr)
+			def initialize(ast)
 
-				@decorated_constraints = Hash.new()
-				@current_var = 0
-				@intermediate_arr = Array.new()
-
-                constr.each do |key, value|
-
-                    @decorated_constraints[key] = [constr[key][0], decorate_constraint(constr[key][0].id, constr[key][1], 0)]
-                end
-
+				@ast = ast
+				@current_id = 1
+				@constraint_nodes = Array.new
+				build_constraints()
 				forward()
+				backward()
 
 			end
 
-			def decorate_constraint(topvar, node, depth)
+			def get_variable_id()
 
-				if(node.parent.is_a? Equal)
-					node.intermediate_variable = topvar
-					node.depth = depth
-					@intermediate_arr.append(node)
+				value = @current_id
+				@current_id +=1
+				return "v"+value.to_s
+			end
 
-					node.children.collect do |n|
+			def build_constraints()
 
-						decorate_constraint(topvar, n, depth + 1)
-					end
+				@ast.children.each_with_index do |n, i|
+						
+					# look for constraintList node
+                	if(n.is_a? Rico::Ricola::ConstraintList)
+                	        
+                	    # Evaluate each constrain separately
+                	    n.children.each_with_index do | e, j|
 
-				else
-
-					if(!node.children.empty?)
-
-						node.intermediate_variable = "v" + new_intermediate_variable().to_s
-						node.depth = depth
-						@intermediate_arr.append(node)
-
-						node.children.collect do |n|
-
-							decorate_constraint(topvar, n, depth + 1)
-						end
-					end
+                        	build_constraint_node(e.children[0], 0)
+                        end
+                    end
 				end
 			end
 
-			def new_intermediate_variable()
+			def build_constraint_node(n, depth)
 
-				@current_var += 1
-				@current_var
+				if(n.is_a? Rico::Ricola::Equal)
+
+					build_constraint_node(n.children[0], 0)
+					build_constraint_node(n.children[1], 0)
+
+				elsif(n.children.length() != 0)
+
+					@constraint_nodes.append(ConstraintNode.new(n, get_variable_id(), depth + 1))
+
+					n.children.each_with_index do |c,i|
+
+						build_constraint_node(c, depth + 1 )
+
+					end
+				end
 			end
 
 			def forward()
-			
-				@intermediate_arr.sort_by{|obj| obj.depth}
 
-				@intermediate_arr.collect do |n|
+				# sort stuff according to depth
+				constraints = @constraint_nodes
+				constraints.sort!{|a,b| a.depth <=> b.depth}
 
-					print("Cmul(" + n.intermediate_variable.to_s + "\n" )#n.children[0].id.to_s + "," + n.children[1].id.to_s + ")")
+				constraints.each do |obj| 
+	
+					puts obj
+
+					if(obj.node.is_a? Rico::Ricola::Pow)
+
+						puts "pow"
+
+					elsif (obj.node.is_a? Rico::Ricola::Sub)
+
+						puts "sub"
+
+					elsif (obj.node.is_a? Rico::Ricola::Add)
+
+						puts "add"
+
+					else
+
+						puts "unknown"
+
+					end
 				end
-
 			end
+
+			def backward()
+
+				# sort stuff according to depth
+				constraints = @constraint_nodes
+				constraints.sort!{|a,b| b.depth <=> a.depth}
+
+				constraints.each do |obj| 
+	
+				end			
+			end
+
         end
     end
 end

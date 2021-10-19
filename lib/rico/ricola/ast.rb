@@ -7,15 +7,13 @@ module Rico
 			
 			attr_reader :children # @return [Array{Node}]
 			attr_reader :parent   # @return [Node, nil]
-			attr_reader :intermediate_variable
-			attr_writer :intermediate_variable
-			attr_reader :depth
-			attr_writer :depth
+			attr_accessor :contractor_variable #return String
+			attr_accessor :depth #return integer
 
 			def initialize(*children)
 				@parent = nil
-				@intermediate_variable = nil
-				@depth = nil
+				@contractor_variable = ""
+				@depth = -1
 				@children = children.collect do |c|
 					check_if_node(c)
 					c.parent = self
@@ -130,8 +128,11 @@ module Rico
 
 
 		class BinOp < Node
+
 			def initialize(l, r)
 				super
+				@contractor_name = ""
+				@inv_contractor_name = ""
 			end
 
 			def lhs; children[0]; end
@@ -177,19 +178,29 @@ module Rico
 		end
 
 		class Add < BinOp
-			def initialize(l, r); super; end
+			def initialize(l, r)
+				super
+			end
 		end
 		class Sub < BinOp
-			def initialize(l, r); super; end
+			def initialize(l, r)
+				super
+			end
 		end
 		class Mul < BinOp
-			def initialize(l, r); super; end
+			def initialize(l, r)
+				super
+			end
 		end
 		class Div < BinOp
-			def initialize(l, r); super; end
+			def initialize(l, r)
+				super
+			end
 		end
 		class Pow < BinOp
-			def initialize(l, r); super; end
+			def initialize(l, r)
+				super
+			end
 		end
 
 		class Number < Node
