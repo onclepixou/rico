@@ -8,12 +8,10 @@ module Rico
 			attr_reader :children # @return [Array{Node}]
 			attr_reader :parent   # @return [Node, nil]
 			attr_accessor :contractor_variable #return String
-			attr_accessor :depth #return integer
 
 			def initialize(*children)
 				@parent = nil
 				@contractor_variable = ""
-				@depth = -1
 				@children = children.collect do |c|
 					check_if_node(c)
 					c.parent = self
@@ -131,8 +129,6 @@ module Rico
 
 			def initialize(l, r)
 				super
-				@contractor_name = ""
-				@inv_contractor_name = ""
 			end
 
 			def lhs; children[0]; end

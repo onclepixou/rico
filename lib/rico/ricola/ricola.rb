@@ -22,12 +22,13 @@ module Rico
 				ast = Rico::Ricola::Parser::parse(tokens)
 				program_is_valid = Rico::Ricola::SemanticAnalyzer.new(ast).is_valid()
 
-				# forward backward
-				Rico::Interval::ForwardBackward.new(ast)
+				if(program_is_valid)
 
-				#semantic = SemanticAnalyzer.new(ast)
-				#ForwardBackward.new(semantic.constraints)
-				ast
+					# forward backward
+					Rico::Ricoco::ForwardBackward.new(ast)
+				end
+
+				puts ast
 
 			rescue Exception => e
 				puts e.message

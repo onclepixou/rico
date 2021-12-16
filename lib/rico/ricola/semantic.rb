@@ -8,7 +8,7 @@ module Rico
         class SemanticAnalyzer
 
         	attr_reader :ast                   # return Root Node
-        	attr_accessor :variable_decl_valid    # return Boolean
+        	attr_accessor :variable_decl_valid # return Boolean
         	attr_accessor :constr_decl_valid   # return Boolean
         	attr_reader :declared_variables    # Hash map variableName (string) --> Array[operand_type (string), data_type (string)]
 
@@ -18,6 +18,7 @@ module Rico
             	@variable_decl_valid = true 
             	@constr_decl_valid = true
             	@declared_variables = Hash.new
+				@supported_calls = SupportedFunctionCalls.new
 
             	load_declared_variables()
             	check_expressions()
@@ -98,6 +99,21 @@ module Rico
                     		return false
                     	end
                 	end
+
+					if(n.is_a? FunctionCall)
+
+						if(! @supported_calls.supports_call(n.id))
+							
+							raise Exception.new("FunctionCall " + n.id + " is not supported")
+							return false
+						end
+
+						if(n.children.size != @supported_calls.arg_nb(n.id))
+
+							raise Exception.new("FunctionCall " + n.id + " is invoked with bad number of argument")
+							return false
+						end
+					end
 
             		check_constraint(n)
             	end

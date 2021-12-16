@@ -13,8 +13,7 @@ module Rico
 
             def load_calls()
 
-                @supported_calls["cos"] = [1, [:both]]
-                @supported_calls["max"] = [2, [:scalar, :scalar]]
+                @supported_calls["cos"] = [1, [:any]]
             end
 
             def supports_call(id)
